@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Mailchimp - AJAX - PHP</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<!--BOF MUST IMPLEMENT-->
+	<script type="text/javascript" src="mailchimp.js"></script>
+	<!--EOF MUST IMPLEMENT-->
+</head>
+<body>
+	<h1>Mailchimp API 3.0 AJAX-PHP example</h1>
+	<!--BOF MUST IMPLEMENT-->
+	<form class="mailchimp-form">
+		<input type="hidden" name="redirecturl" value="http://example.com">
+		<label>
+			<span style="display: block;">Name</span>
+			<input type="text" name="name" placeholder="Name">
+		</label>
+		<label>
+			<span style="display: block;">Email</span>
+			<input type="text" name="email" placeholder="Email">
+		</label>
+		<label style="display: block">
+			<input type="checkbox" name="agb"> Ich habe die AGBs gelesen und akzepziere sie.
+		</label>
+		<div>
+			<button type="submit">Jetzt vormerken!</button>
+		</div>
+	</form>
+	<!--EOF MUST IMPLEMENT-->
+</body>
+</html>
