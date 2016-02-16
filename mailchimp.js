@@ -1,11 +1,3 @@
-//TEXT RESPONSES
-var t_name = 'Sie müssen Ihren Namen angeben',
-	t_agb = 'Sie müssem die AGB akzeptieren',
-	t_email = 'Ihre angegebene E-Mail ist nicht korrekt',
-	t_error = 'Ein Fehler ist aufgetreten',
-	t_button = 'Jetzt vormerken!',
-	t_processing = 'Anfrage wird bearbeitet';
-
 //SERIALIZE FORM
 $.fn.serializeObject = function() {
 	var o = {};
@@ -29,28 +21,49 @@ function checkEmail(email) {
 	return reg.test(email);
 }
 
+function addError(i){
+	i.addClass('input-error');
+}
+
+function removeError(i){
+	i.removeClass('input-error');
+}
+
+function handleError(input){
+	var $input = $(input);
+
+	if(($input.is(':checkbox') && !$input.prop('checked')) || ($input.is(':radio') && $('input[name='+$input.attr('name')+']:checked').size() == 0) || $input.val() === ''){
+		addError($input);
+	}else{
+		removeError($input);
+	}
+
+	//HANDLE EMAIL VALIDATION
+	if($input.attr('type')==='email' && ($input.val() === '' || !checkEmail($input.val()))){
+		addError($input);
+	}else if($input.attr('type')==='email'){
+		removeError($input);
+	}
+}
+
 $(function(){
 	var $mailchimpForm = $('.mailchimp-form');
+
 	$mailchimpForm.on('submit', function(e){
+		var $requitedFields = $('input, select', $mailchimpForm).filter('[required]');
+		$requitedFields.each(function(index, input){
+			handleError(input);
+		});
 
-		var $button = $('button[type="submit"]',$mailchimpForm),
-			email = $('input[name="email"]', $mailchimpForm).val(),
-			agb = $('input[name="agb"]', $mailchimpForm).is(':checked'),
-			name = $('input[name="name"]', $mailchimpForm).val(),
-			redirectUrl = $('input[name="redirecturl"]').val();
-
-		if(!name || !agb || (email=='' || !checkEmail(email))){
-			if(!name){
-				alert(t_name);
-			}
-			if(!agb){
-				alert(t_agb);
-			}
-			if (email=='' || !checkEmail(email)) {
-				alert(t_email);
-			}
+		if($mailchimpForm.find('.input-error').length !== 0){
 			return false;
 		}
+
+		var $button = $('button[type="submit"]',$mailchimpForm),
+			t_error = $mailchimpForm.data('error'),
+			t_processing = $button.data('processing'),
+			t_button = $button.data('text'),
+			redirectUrl = $('input[name="redirecturl"]',$mailchimpForm).val();
 
 		$.ajax({
 			type: 'POST',
@@ -61,7 +74,7 @@ $(function(){
 			beforeSend: function(){
 				$button.text(t_processing).prop('disabled', true);
 			}
-		}).success(function(a){
+		}).success(function(){
 			//REDIRECT AFTER SUCCESS
 			window.location.href = redirectUrl;
 		}).error(function(){
